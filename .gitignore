@@ -1,0 +1,70 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+.env
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Pytest and test coverage files
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+.coverage.*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temporary files
+*.bak
+*.tmp
+.temp/
+
+# Documentation build
+docs/_build/
+site/
+
+# Web assets
+node_modules/
+.cache/
+.parcel-cache/
+
+# Translation and locale files
+*.mo
+*.pot
+
+# Misc
+.mypy_cache/
