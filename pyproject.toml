@@ -35,4 +35,4 @@ exclude = [
 ]
 
 [tool.ruff.lint.isort]
-lines-after-imports = 2 
+lines-after-imports = 2
