@@ -12,6 +12,16 @@ class RunConfig(BaseModel):
     debug: bool = False
 
 
+class ApiV1Prefix(BaseModel):
+    prefix: str = "/v1"
+    status_prefix: str = "/status"
+
+
+class ApiPrefixConfig(BaseModel):
+    prefix: str = "/api"
+    v1: ApiV1Prefix = ApiV1Prefix()
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         case_sensitive=False,
@@ -20,6 +30,8 @@ class Settings(BaseSettings):
         env_file=".env",
     )
     run: RunConfig
+
+    api: ApiPrefixConfig = ApiPrefixConfig()
 
     BaseSettings.model_config = ConfigDict(extra="ignore")
 
