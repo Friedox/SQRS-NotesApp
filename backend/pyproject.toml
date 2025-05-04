@@ -1,0 +1,58 @@
+[tool.poetry]
+name = "NotesApp"
+version = "0.1.0"
+description = "Simple Notes Application"
+authors = ["Friedox <dvzvidrin48@gmail.com>"]
+license = "MIT"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13"
+fastapi = ">=0.115.12,<0.116.0"
+uvicorn = ">=0.34.2,<0.35.0"
+sqlalchemy = ">=2.0.40,<3.0.0"
+pydantic = ">=2.11.4,<3.0.0"
+python-jose = {extras = ["cryptography"], version = ">=3.4.0,<4.0.0"}
+passlib = {extras = ["bcrypt"], version = ">=1.7.4,<2.0.0"}
+alembic = ">=1.15.2,<2.0.0"
+httpx = ">=0.28.1,<0.29.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+pytest-cov = "^6.1.1"
+flake8 = "^7.2.0"
+black = "^25.1.0"
+isort = "^6.0.1"
+pre-commit = "^4.2.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+show-fixes = true
+
+[tool.ruff.lint]
+select = [
+    "E",     # Error
+    "F",     # Pyflakes
+    "I",     # Isort
+    "W",     # Pycodestyle
+]
+
+exclude = [
+    ".git",
+    ".ruff_cache",
+    "__pycache__",
+    "build",
+    "dist",
+    "venv",
+]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
