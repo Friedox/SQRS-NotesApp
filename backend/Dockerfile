@@ -4,14 +4,19 @@ WORKDIR /app
 
 COPY pyproject.toml ./
 
-RUN pip install poetry && \
+RUN pip install --no-cache-dir poetry && \
     poetry config virtualenvs.create false && \
-    poetry install --no-interaction
+    poetry install --no-interaction --no-root
 
-COPY app/ ./app/
+COPY . .
+
+RUN mkdir -p /app/data
 
 EXPOSE 8000
 
-CMD ["/bin/sh", "-c", " \
-  poetry run alembic upgrade head; \
-  poetry run python -m main"]
+RUN echo '#!/bin/sh\n\
+poetry run alembic upgrade head\n\
+poetry run uvicorn main:app --host 0.0.0.0 --port 8000' > /app/start.sh && \
+chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]
