@@ -41,7 +41,7 @@ async def get_all_notes_endpoint(
 
 @router.get("/{note_id}", response_model=NoteResponse)
 async def get_note_endpoint(
-        note_id: int = Path(..., title="The ID of the note to get"),
+        note_id: int = Path(title="The ID of the note to get"),
         session: AsyncSession = Depends(database_helper.session_getter),
 ):
     user = await get_hardcoded_user()
@@ -52,7 +52,7 @@ async def get_note_endpoint(
 @router.patch("/{note_id}", response_model=NoteResponse)
 async def update_note_endpoint(
         note_data: NoteUpdate,
-        note_id: int = Path(..., title="The ID of the note to update"),
+        note_id: int = Path(title="The ID of the note to update"),
         session: AsyncSession = Depends(database_helper.session_getter),
 ):
     user = await get_hardcoded_user()
@@ -67,7 +67,7 @@ async def update_note_endpoint(
 
 @router.delete("/{note_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_note_endpoint(
-        note_id: int = Path(..., title="The ID of the note to delete"),
+        note_id: int = Path(title="The ID of the note to delete"),
         session: AsyncSession = Depends(database_helper.session_getter),
 ):
     user = await get_hardcoded_user()

@@ -2,20 +2,13 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock* ./
+COPY pyproject.toml ./
 
 RUN pip install --no-cache-dir poetry && \
     poetry config virtualenvs.create false && \
     poetry install --no-interaction --no-root
 
 COPY . .
-
-RUN poetry install --no-interaction
-
-ENV CONFIG__RUN__HOST=0.0.0.0
-ENV CONFIG__RUN__PORT=8000
-ENV CONFIG__RUN__DEBUG=False
-ENV CONFIG__DATABASE__DB_URL=sqlite+aiosqlite:///data/notes.sqlite3
 
 RUN mkdir -p /app/data
 
