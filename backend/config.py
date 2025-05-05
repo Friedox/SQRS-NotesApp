@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -40,6 +40,13 @@ class ApiPrefixConfig(BaseModel):
     v1: ApiV1Prefix = ApiV1Prefix()
 
 
+class SecurityConfig(BaseModel):
+    jwt_private_key: SecretStr
+    jwt_public_key: str
+    jwt_expires_in: int = 24 * 60 * 60
+    jwt_issuer_name: str = "notes_app"
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         case_sensitive=False,
@@ -52,6 +59,8 @@ class Settings(BaseSettings):
     api: ApiPrefixConfig = ApiPrefixConfig()
 
     database: DatabaseConfig
+
+    security: SecurityConfig
 
     BaseSettings.model_config = ConfigDict(extra="ignore")
 

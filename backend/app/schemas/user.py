@@ -5,6 +5,8 @@ class UserCredentialsScheme(BaseModel):
     email: EmailStr
     password: SecretStr
 
+
+class UserRegisterScheme(UserCredentialsScheme):
     name: str | None = None
 
 

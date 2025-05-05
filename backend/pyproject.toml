@@ -19,6 +19,7 @@ httpx = ">=0.28.1,<0.29.0"
 pydantic-settings = "^2.9.1"
 aiosqlite = "^0.21.0"
 tzdata = "^2025.2"
+pyjwt = "^2.10.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"
