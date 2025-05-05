@@ -6,12 +6,10 @@ COPY pyproject.toml ./
 
 RUN pip install poetry && \
     poetry config virtualenvs.create false && \
-    poetry install --no-interaction
+    poetry install
 
 COPY app/ ./app/
 
 EXPOSE 8000
 
-CMD ["/bin/sh", "-c", " \
-  poetry run alembic upgrade head; \
-  poetry run python -m main"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
