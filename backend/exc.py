@@ -27,3 +27,10 @@ class UserNotFoundError(ServiceException):
 
     def __init__(self):
         super().__init__("User not found.")
+
+
+class NoteNotFoundError(ServiceException):
+    code = 404
+
+    def __init__(self, note_id: int):
+        super().__init__(f"Note with ID {note_id} not found")
