@@ -29,7 +29,7 @@ async def register_user(session: AsyncSession, user_creds: UserRegisterScheme):
 
     user = await user_repo.create(session=session, new_user=new_user)
 
-    auth_token = await token_mgr.issue_token(user=user)
+    auth_token = await token_mgr.issue_token(session=session, user=user)
 
     return {"new_user": user, "auth_token": auth_token}
 
@@ -53,13 +53,13 @@ async def login_user(session: AsyncSession, user_creds: UserCredentialsScheme):
         password_hash=stored_hash.get_secret_value(),
     )
 
-    auth_token = await token_mgr.issue_token(user=user)
+    auth_token = await token_mgr.issue_token(session=session, user=user)
 
     return {"new_user": user, "auth_token": auth_token}
 
 
 async def authenticate_token(session: AsyncSession, token: str) -> UserScheme:
-    payload = await token_mgr.decrypt(token)
+    payload = await token_mgr.decrypt(session=session, token=token)
 
     user = await user_repo.get(session=session, user_id=payload["user_id"])
 
@@ -75,3 +75,15 @@ def hash_password(password: str) -> str:
 async def authenticate(stored_hash: str, input_password: str):
     if not bcrypt.checkpw(input_password.encode(), stored_hash.encode()):
         raise InvalidCredentialsError
+
+
+async def logout_user(session: AsyncSession, token: str) -> dict[str, bool]:
+    await authenticate_token(session=session, token=token)
+
+    payload = await token_mgr.decrypt(session=session, token=token)
+
+    jti = payload["jti"]
+
+    await token_mgr.logout(session=session, jti=jti)
+
+    return {"logged_out": True}
