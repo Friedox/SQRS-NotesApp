@@ -13,4 +13,5 @@ COPY app/ ./app/
 EXPOSE 8000
 
 CMD ["/bin/sh", "-c", " \
+  poetry run alembic upgrade head; \
   poetry run python -m main"]
