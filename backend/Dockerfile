@@ -17,12 +17,10 @@ ENV CONFIG__RUN__PORT=8000
 ENV CONFIG__RUN__DEBUG=False
 ENV CONFIG__DATABASE__DB_URL=sqlite+aiosqlite:///data/notes.sqlite3
 
-# Create data directory for SQLite database
 RUN mkdir -p /app/data
 
 EXPOSE 8000
 
-# Create a shell script to run migrations and start the application
 RUN echo '#!/bin/sh\n\
 poetry run alembic upgrade head\n\
 poetry run uvicorn main:app --host 0.0.0.0 --port 8000' > /app/start.sh && \

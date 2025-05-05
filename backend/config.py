@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 load_dotenv()
 
 
@@ -33,6 +32,7 @@ class ApiV1Prefix(BaseModel):
     prefix: str = "/v1"
     status_prefix: str = "/status"
     auth_prefix: str = "/auth"
+    notes_prefix: str = "/notes"
 
 
 class ApiPrefixConfig(BaseModel):

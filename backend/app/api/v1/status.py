@@ -4,7 +4,7 @@ from app.services.response_middleware import ResponseMiddleware
 from app.services.status import get_status
 
 
-router = APIRouter(tags=["Status"])
+router = APIRouter(tags=["Statu"])
 
 
 @router.get("/")
