@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 load_dotenv()
 
 ONE_DAY_IN_SECONDS: Final[int] = 24 * 60 * 60
@@ -37,6 +36,7 @@ class ApiV1Prefix(BaseModel):
     prefix: str = "/v1"
     status_prefix: str = "/status"
     auth_prefix: str = "/auth"
+    notes_prefix: str = "/notes"
 
 
 class ApiPrefixConfig(BaseModel):
