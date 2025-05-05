@@ -1,9 +1,13 @@
+from typing import Final
+
 from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 load_dotenv()
+
+ONE_DAY_IN_SECONDS: Final[int] = 24 * 60 * 60
 
 
 class DatabaseConfig(BaseModel):
@@ -43,7 +47,7 @@ class ApiPrefixConfig(BaseModel):
 class SecurityConfig(BaseModel):
     jwt_private_key: SecretStr
     jwt_public_key: str
-    jwt_expires_in: int = 24 * 60 * 60
+    jwt_expires_in: int = ONE_DAY_IN_SECONDS
     jwt_issuer_name: str = "notes_app"
 
 
