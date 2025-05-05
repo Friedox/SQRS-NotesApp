@@ -1,13 +1,15 @@
 services:
-  api:
+  notes_backend_app:
+    container_name: notes_backend_app
+    hostname: notes_backend_app
+    env_file:
+      - ./backend/.env
     build: backend
     ports:
       - "8000:8000"
     volumes:
       - ./backend/app:/app/app
       - sqlite_data:/app/data
-    environment:
-      - DATABASE_URL=sqlite:///data/notes.db
     restart: unless-stopped
 
 volumes:
