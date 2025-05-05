@@ -19,6 +19,7 @@ httpx = ">=0.28.1,<0.29.0"
 pydantic-settings = "^2.9.1"
 aiosqlite = "^0.21.0"
 tzdata = "^2025.2"
+pyjwt = "^2.10.1"
 colorama = "^0.4.6"
 python-multipart = "^0.0.20"
 
@@ -49,7 +50,6 @@ select = [
     "I", # Isort
     "W", # Pycodestyle
 ]
-
 exclude = [
     ".git",
     ".ruff_cache",
