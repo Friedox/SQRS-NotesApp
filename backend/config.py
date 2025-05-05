@@ -53,8 +53,13 @@ class SecurityConfig(BaseModel):
     jwt_issuer_name: str = "notes_app"
 
 
+class RedisConfig(BaseModel):
+    url: str
+
+
 class TranslationConfig(BaseModel):
     api_key: SecretStr
+    cache_ttl: int
 
 
 class Settings(BaseSettings):
@@ -65,14 +70,11 @@ class Settings(BaseSettings):
         env_file=".env",
     )
     run: RunConfig
-
     api: ApiPrefixConfig = ApiPrefixConfig()
-
     database: DatabaseConfig
-
     security: SecurityConfig
-
-    translation: TranslationConfig = TranslationConfig()
+    redis: RedisConfig
+    translation: TranslationConfig
 
     BaseSettings.model_config = ConfigDict(extra="ignore")
 

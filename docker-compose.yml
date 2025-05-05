@@ -11,6 +11,18 @@ services:
       - ./backend/app:/app/app
       - sqlite_data:/app/data
     restart: unless-stopped
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
 
 volumes:
   sqlite_data:
+  redis_data:

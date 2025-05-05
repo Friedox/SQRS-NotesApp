@@ -6,10 +6,13 @@ COPY pyproject.toml ./
 
 RUN pip install --no-cache-dir poetry && \
     poetry config virtualenvs.create false && \
+    poetry lock && \
     poetry install --no-interaction --no-root
+
 COPY . /app
 
-RUN poetry install --no-interaction
+RUN poetry lock && \
+    poetry install --no-interaction
 
 EXPOSE 8000
 

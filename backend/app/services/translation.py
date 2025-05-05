@@ -3,9 +3,14 @@ from typing import Dict, List
 
 import httpx
 
+from app.services.cache import cache_service
 from config import settings
 
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -17,8 +22,28 @@ class TranslationService:
             "x-rapidapi-host": "deep-translate1.p.rapidapi.com",
             "x-rapidapi-key": settings.translation.api_key.get_secret_value(),
         }
+        logger.debug(
+            "Translation service initialized with cache TTL: %d seconds",
+            settings.translation.cache_ttl,
+        )
+
+    def _get_cache_key(self, text: str, source: str, target: str) -> str:
+        return f"translation:{source}:{target}:{text}"
 
     async def translate_text(self, text: str, source: str, target: str) -> str:
+        cache_key = self._get_cache_key(text, source, target)
+        cached = await cache_service.get(cache_key)
+
+        if cached:
+            logger.debug(
+                "Cache hit: translation found in cache for key '%s'", cache_key
+            )
+            return cached.decode()
+
+        logger.debug(
+            "Cache miss: translation not found in cache for key '%s', calling API",
+            cache_key,
+        )
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 self.base_url,
@@ -38,7 +63,16 @@ class TranslationService:
                 error_msg = "Invalid translations format in response: {}".format(data)
                 raise ValueError(error_msg)
 
-            return translations[0]
+            translation = translations[0]
+            await cache_service.set(
+                cache_key, translation, settings.translation.cache_ttl
+            )
+            logger.debug(
+                "Translation cached with key '%s' for %d seconds",
+                cache_key,
+                settings.translation.cache_ttl,
+            )
+            return translation
 
     async def detect_language(self, text: str) -> Dict:
         async with httpx.AsyncClient() as client:
