@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 load_dotenv()
 
 ONE_DAY_IN_SECONDS: Final[int] = 24 * 60 * 60
@@ -37,6 +38,7 @@ class ApiV1Prefix(BaseModel):
     status_prefix: str = "/status"
     auth_prefix: str = "/auth"
     notes_prefix: str = "/notes"
+    translation_prefix: str = "/translation"
 
 
 class ApiPrefixConfig(BaseModel):
@@ -49,6 +51,10 @@ class SecurityConfig(BaseModel):
     jwt_public_key: str
     jwt_expires_in: int = ONE_DAY_IN_SECONDS
     jwt_issuer_name: str = "notes_app"
+
+
+class TranslationConfig(BaseModel):
+    api_key: SecretStr
 
 
 class Settings(BaseSettings):
@@ -65,6 +71,8 @@ class Settings(BaseSettings):
     database: DatabaseConfig
 
     security: SecurityConfig
+
+    translation: TranslationConfig = TranslationConfig()
 
     BaseSettings.model_config = ConfigDict(extra="ignore")
 
