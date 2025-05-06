@@ -36,7 +36,7 @@ class UserRepository:
         )
 
         session.add(user)
-        await session.commit()
+        await session.flush()
         await session.refresh(user)
         return UserScheme.model_validate(user, from_attributes=True)
 
