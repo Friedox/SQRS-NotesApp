@@ -32,6 +32,15 @@ class RunConfig(BaseModel):
     port: int = 8000
     debug: bool = False
 
+    @property
+    def allow_origins(self) -> list[str]:
+        origins = ["inno-notes-app.ru"]
+
+        if self.debug:
+            origins.append("http://localhost:3000")
+
+        return origins
+
 
 class ApiV1Prefix(BaseModel):
     prefix: str = "/v1"
