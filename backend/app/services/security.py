@@ -76,7 +76,6 @@ class TokenManager:
 
     async def issue_token(self, user: UserScheme, session: AsyncSession) -> str:
         token_payload = {"user_id": user.user_id}
-
         auth_token = await self.generate_token(
             session=session, user_id=user.user_id, payload=token_payload
         )

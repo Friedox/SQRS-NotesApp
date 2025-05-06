@@ -2,6 +2,8 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
+from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware
 
 from app.api import router as main_router
 from config import settings
@@ -16,6 +18,17 @@ async def lifespan(app: FastAPI):
     yield
 
 
+middleware = [
+    Middleware(
+        CORSMiddleware,  # type: ignore
+        allow_origins=settings.run.allow_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+]
+
+
 app = FastAPI(
     title="Simple Notes API",
     description="Simple Notes API",
@@ -23,7 +36,9 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
     docs_url="/api/docs/",
     lifespan=lifespan,
+    middleware=middleware,
 )
+
 
 app.include_router(main_router)
 

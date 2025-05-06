@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 load_dotenv()
 
 ONE_DAY_IN_SECONDS: Final[int] = 24 * 60 * 60
@@ -31,12 +32,22 @@ class RunConfig(BaseModel):
     port: int = 8000
     debug: bool = False
 
+    @property
+    def allow_origins(self) -> list[str]:
+        origins = ["inno-notes-app.ru"]
+
+        if self.debug:
+            origins.append("http://localhost:3000")
+
+        return origins
+
 
 class ApiV1Prefix(BaseModel):
     prefix: str = "/v1"
     status_prefix: str = "/status"
     auth_prefix: str = "/auth"
     notes_prefix: str = "/notes"
+    translation_prefix: str = "/translation"
 
 
 class ApiPrefixConfig(BaseModel):
@@ -51,6 +62,15 @@ class SecurityConfig(BaseModel):
     jwt_issuer_name: str = "notes_app"
 
 
+class RedisConfig(BaseModel):
+    url: str
+
+
+class TranslationConfig(BaseModel):
+    api_key: SecretStr
+    cache_ttl: int
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         case_sensitive=False,
@@ -59,12 +79,11 @@ class Settings(BaseSettings):
         env_file=".env",
     )
     run: RunConfig
-
     api: ApiPrefixConfig = ApiPrefixConfig()
-
     database: DatabaseConfig
-
     security: SecurityConfig
+    redis: RedisConfig
+    translation: TranslationConfig
 
     BaseSettings.model_config = ConfigDict(extra="ignore")
 
