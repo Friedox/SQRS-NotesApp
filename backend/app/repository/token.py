@@ -16,7 +16,7 @@ class TokenRepository:
             created_at=token.created_at,
         )
         session.add(new_token)
-        await session.commit()
+        await session.flush()
         await session.refresh(new_token)
 
     @staticmethod
