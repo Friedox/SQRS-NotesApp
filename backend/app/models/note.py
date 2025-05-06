@@ -1,10 +1,11 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import ForeignKey, Integer, String, Text, DateTime
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
+
 
 if TYPE_CHECKING:
     from .user import User
@@ -23,5 +24,7 @@ class Note(Base):
         DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow
     )
 
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.user_id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("user.user_id"), nullable=False
+    )
     user: Mapped["User"] = relationship("User", back_populates="notes")
