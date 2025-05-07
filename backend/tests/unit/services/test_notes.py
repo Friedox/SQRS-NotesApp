@@ -1,28 +1,24 @@
-import sys
 from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock, patch
-
+import sys
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.schemas.note import NoteCreate, NoteResponse, NoteUpdate
-from app.services.notes import (
-    create_note,
-    delete_note,
-    get_all_notes,
-    get_note,
-    update_note,
-)
+from app.schemas.note import NoteCreate, NoteUpdate, NoteResponse
 from exc import NoteNotFoundError
 
+sys.modules['app.services.auth'] = MagicMock()
+sys.modules['app.repository.note'] = MagicMock()
 
-sys.modules["app.services.auth"] = MagicMock()
-sys.modules["app.repository.note"] = MagicMock()
+from app.services.notes import (
+    create_note,
+    get_note,
+    get_all_notes,
+    update_note,
+    delete_note
+)
 
-
-mock_auth = sys.modules["app.services.auth"]
-mock_note_repo = sys.modules["app.repository.note"]
-
+mock_auth = sys.modules['app.services.auth']
+mock_note_repo = sys.modules['app.repository.note']
 
 @pytest.fixture(autouse=True)
 def reset_mocks():
@@ -54,11 +50,9 @@ def user_data():
     user.user_id = 1
     return user
 
-
 @pytest.fixture
 def auth_patch():
     with patch("app.services.notes.authenticate_token") as mock:
-
         async def mock_auth(*args, **kwargs):
             user = MagicMock()
             user.user_id = 1
