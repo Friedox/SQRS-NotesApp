@@ -16,4 +16,6 @@ class User(Base):
 
     name: Mapped[str] = mapped_column(String, nullable=True)
 
-    notes: Mapped[List["Note"]] = relationship("Note", back_populates="user", cascade="all, delete-orphan")
+    notes: Mapped[List["Note"]] = relationship(
+        "Note", back_populates="user", cascade="all, delete-orphan"
+    )
