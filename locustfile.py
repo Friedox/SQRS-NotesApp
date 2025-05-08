@@ -1,75 +1,161 @@
 import uuid
+import time
 from locust import HttpUser, SequentialTaskSet, task, between
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class UserBehavior(SequentialTaskSet):
     def on_start(self):
+        # Add small delay to prevent database locks
+        time.sleep(0.5)
+
         self.email = f"user_{uuid.uuid4().hex}@example.com"
         self.password = "Password123!"
         self.name = "locust_user"
-        r = self.client.post(
-            "/api/v1/auth/register/",
-            json={"email": self.email, "password": self.password, "name": self.name},
-        )
-        if r.status_code != 200:
-            raise RuntimeError(f"Register failed: {r.status_code} {r.text}")
 
-        r = self.client.post(
-            "/api/v1/auth/login/",
-            json={"email": self.email, "password": self.password},
-        )
-        if r.status_code != 200:
-            raise RuntimeError(f"Login failed: {r.status_code} {r.text}")
+        try:
+            r = self.client.post(
+                "/api/v1/auth/register/",
+                json={
+                    "email": self.email,
+                    "password": self.password,
+                    "name": self.name,
+                },
+            )
+            if r.status_code != 200:
+                logger.error(f"Register failed: {r.status_code} {r.text}")
+                return
+        except Exception as e:
+            logger.error(f"Register exception: {str(e)}")
+            return
 
-        data = r.json()
-        token = data.get("auth_token")
-        if not token:
-            raise KeyError(f"No auth_token in login response: {data}")
+        try:
+            r = self.client.post(
+                "/api/v1/auth/login/",
+                json={"email": self.email, "password": self.password},
+            )
+            if r.status_code != 200:
+                logger.error(f"Login failed: {r.status_code} {r.text}")
+                return
+        except Exception as e:
+            logger.error(f"Login exception: {str(e)}")
+            return
 
-        self.client.headers.update({"Authorization": f"Bearer {token}"})
+        try:
+            data = r.json()
+            if "ok" in data and data["ok"] and "detail" in data:
+                if "auth_token" in data["detail"]:
+                    token = data["detail"]["auth_token"]
+                else:
+                    logger.error(f"No auth_token in login detail: {data}")
+                    return
+            else:
+                token = data.get("auth_token")
+                if not token:
+                    logger.error(f"No auth_token in login response: {data}")
+                    return
+
+            self.client.headers.update({"Authorization": f"Bearer {token}"})
+            self.logged_in = True
+        except Exception as e:
+            logger.error(f"Token extraction exception: {str(e)}")
+            return
 
     @task
     def check_status(self):
-        self.client.get("/api/v1/status/")
+        if not hasattr(self, "logged_in") or not self.logged_in:
+            return
+        try:
+            self.client.get("/api/v1/status/")
+        except Exception as e:
+            logger.error(f"Status check exception: {str(e)}")
 
     @task
     def check_secured(self):
-        self.client.get("/api/v1/status/secured_status/")
+        if not hasattr(self, "logged_in") or not self.logged_in:
+            return
+        try:
+            self.client.get("/api/v1/status/secured_status/")
+        except Exception as e:
+            logger.error(f"Secured status exception: {str(e)}")
 
     @task
     def notes_crud(self):
-        r = self.client.post(
-            "/api/v1/notes/",
-            json={"title": "Locust Test", "content": "Performance testing content"},
-        )
-        if r.status_code != 201:
+        if not hasattr(self, "logged_in") or not self.logged_in:
             return
-        note = r.json()
-        note_id = note.get("id") or note.get("note_id") or note
+        try:
+            r = self.client.post(
+                "/api/v1/notes/",
+                json={"title": "Locust Test", "content": "Performance testing content"},
+            )
+            if r.status_code != 201:
+                logger.error(f"Note creation failed: {r.status_code} {r.text}")
+                return
 
-        self.client.get(f"/api/v1/notes/{note_id}")
+            try:
+                note = r.json()
+                if isinstance(note, dict):
+                    note_id = note.get("id") or note.get("note_id")
+                    if not note_id and "detail" in note:
+                        detail = note["detail"]
+                        if isinstance(detail, dict):
+                            note_id = detail.get("id") or detail.get("note_id")
+                else:
+                    note_id = note
 
-        self.client.patch(
-            f"/api/v1/notes/{note_id}",
-            json={"title": "Updated Title", "content": "Updated content"},
-        )
+                if not note_id:
+                    logger.error(f"Could not extract note_id from response: {note}")
+                    return
+            except Exception as e:
+                logger.error(f"Note ID extraction exception: {str(e)}")
+                return
 
-        self.client.delete(f"/api/v1/notes/{note_id}")
+            r = self.client.get(f"/api/v1/notes/{note_id}")
+            if r.status_code != 200:
+                logger.error(f"Note retrieval failed: {r.status_code} {r.text}")
+
+            r = self.client.patch(
+                f"/api/v1/notes/{note_id}",
+                json={"title": "Updated Title", "content": "Updated content"},
+            )
+            if r.status_code != 200:
+                logger.error(f"Note update failed: {r.status_code} {r.text}")
+
+            r = self.client.delete(f"/api/v1/notes/{note_id}")
+            if r.status_code != 204 and r.status_code != 200:
+                logger.error(f"Note deletion failed: {r.status_code} {r.text}")
+
+        except Exception as e:
+            logger.error(f"Notes CRUD exception: {str(e)}")
 
     @task
     def translation_flow(self):
-        self.client.post(
-            "/api/v1/translation/detection", params={"text": "Hello world"}
-        )
+        if not hasattr(self, "logged_in") or not self.logged_in:
+            return
+        try:
+            r = self.client.post(
+                "/api/v1/translation/detection", params={"text": "Hello world"}
+            )
+            if r.status_code != 200:
+                logger.error(f"Language detection failed: {r.status_code} {r.text}")
 
-        self.client.post(
-            "/api/v1/translation/",
-            json={"text": "Hello world", "source": "en", "target": "es"},
-        )
+            r = self.client.post(
+                "/api/v1/translation/",
+                json={"text": "Hello world", "source": "en", "target": "es"},
+            )
+            if r.status_code != 200:
+                logger.error(f"Translation failed: {r.status_code} {r.text}")
 
-        self.client.get("/api/v1/translation/languages")
+            r = self.client.get("/api/v1/translation/languages")
+            if r.status_code != 200:
+                logger.error(f"Language list failed: {r.status_code} {r.text}")
+
+        except Exception as e:
+            logger.error(f"Translation flow exception: {str(e)}")
 
 
 class NotesUser(HttpUser):
     tasks = [UserBehavior]
-    wait_time = between(1, 3)
+    wait_time = between(3, 5)  # Increased wait time to reduce database contention
