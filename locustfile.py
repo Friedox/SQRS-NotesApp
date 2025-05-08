@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 
 class UserBehavior(SequentialTaskSet):
     def on_start(self):
-        # Add small delay to prevent database locks
         time.sleep(0.5)
 
         self.email = f"user_{uuid.uuid4().hex}@example.com"
@@ -158,4 +157,4 @@ class UserBehavior(SequentialTaskSet):
 
 class NotesUser(HttpUser):
     tasks = [UserBehavior]
-    wait_time = between(3, 5)  # Increased wait time to reduce database contention
+    wait_time = between(3, 5)
