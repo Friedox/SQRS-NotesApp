@@ -1,4 +1,5 @@
 import bcrypt
+from logger import get_logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repository.user import user_repo
@@ -11,7 +12,6 @@ from app.schemas.user import (
 from app.services.security import token_mgr
 from config import settings
 from exc import EmailAlreadyInUseError, InvalidCredentialsError
-from logger import get_logger
 
 
 logger = get_logger(__name__, debug=settings.run.debug)

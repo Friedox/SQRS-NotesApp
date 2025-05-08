@@ -2,12 +2,12 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
+from logger import get_logger
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api import router as main_router
 from config import settings
-from logger import get_logger
 
 
 logger = get_logger(name=__name__, debug=settings.run.debug)
