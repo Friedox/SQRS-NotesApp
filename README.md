@@ -392,6 +392,9 @@ Results:
 Our continuous monitoring shows all critical endpoints are consistently responding within the 200ms target window during normal load conditions.
 
 ### System Stability Under Load: 20+ Concurrent Users (Locust Test)
+When running Locust with 20 concurrent users, we encountered a registration issue: the SQLite database became locked and some users failed to register. After a short time, we also hit the rate limit on the external translation API, resulting in 429 responses. Overall, the system remained stable and usable for end users. However, there are clear areas for improvement—implementing an API-key manager or upgrading our translation-API plan, and addressing the database-locking issues.
+
+![Locust data](assets/locust.png)
 
 ### Database Queries Optimized for Efficiency and Speed
 
