@@ -1,4 +1,5 @@
 import bcrypt
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repository.user import user_repo

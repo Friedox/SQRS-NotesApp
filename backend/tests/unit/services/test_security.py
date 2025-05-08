@@ -10,6 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.token import TokenScheme
 from app.services.security import TokenManager, _fingerprint
+from config import settings
+from exc import InvalidCredentialsError
 
 
 @pytest.fixture

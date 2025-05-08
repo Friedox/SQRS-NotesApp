@@ -201,6 +201,7 @@ async def test_authenticate_token_success(monkeypatch, mock_session):
         password_hash="h",
         name=None
     )
+    
     fake_repo = AsyncMock(get=AsyncMock(return_value=expected_user))
     monkeypatch.setattr("app.services.auth.user_repo", fake_repo)
 
