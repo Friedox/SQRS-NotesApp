@@ -30,10 +30,10 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
-line-length = 88
+line-length = 80
 
 [tool.ruff]
-line-length = 88
+line-length = 80
 target-version = "py310"
 show-fixes = true
 
