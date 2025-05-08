@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+
+h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+}
+
+.App-header {
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+}
+
+.account {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+body {
+    background-color: #F2F2F2;
+}
+
+.regular {
+    font-weight: 400;
+}
+
+.medium {
+    font-weight: 500;
+}
+.semiBold{
+    font-weight: 600;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.create_note_btn {
+    color: white;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    border-radius: 10px;
+    background-color: #00AE92;
+    padding: 10px 25px 10px 10px;
+    width: fit-content;
+}
+
+.create_note_btn:hover {
+    background-color: #00977E;
+}
+
+.notes_container {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1100px;
+}
+
+.note_block {
+    min-width: 350px;
+    border-radius: 10px;
+    border: solid 1px #7A7A7A;
+}
+
+.note_block_name {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.note_block_text {
+    display: flex;
+    flex-direction: column;
+    padding: 15px 15px 20px 15px;
+}
+
+.flex_start {
+    display: flex;
+    text-align: left;
+}
+
+.notes_wrapper {
+    display: flex;
+    gap: 20px 20px;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #7A7A7A;
+}
