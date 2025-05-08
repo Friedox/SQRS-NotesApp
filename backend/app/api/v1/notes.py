@@ -27,7 +27,11 @@ async def create_note_endpoint(
     session: AsyncSession = Depends(database_helper.session_getter),
 ):
     return await ResponseMiddleware.response(
-        create_note(session=session, note_data=note_data, token=credentials.credentials)
+        create_note(
+            session=session,
+            note_data=note_data,
+            token=credentials.credentials,
+        )
     )
 
 
@@ -48,7 +52,11 @@ async def get_note_endpoint(
     session: AsyncSession = Depends(database_helper.session_getter),
 ):
     return await ResponseMiddleware.response(
-        get_note(session=session, note_id=note_id, token=credentials.credentials)
+        get_note(
+            session=session,
+            note_id=note_id,
+            token=credentials.credentials,
+        )
     )
 
 
@@ -76,5 +84,9 @@ async def delete_note_endpoint(
     session: AsyncSession = Depends(database_helper.session_getter),
 ):
     return await ResponseMiddleware.response(
-        delete_note(session=session, note_id=note_id, token=credentials.credentials)
+        delete_note(
+            session=session,
+            note_id=note_id,
+            token=credentials.credentials,
+        )
     )

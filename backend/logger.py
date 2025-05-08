@@ -50,7 +50,11 @@ class LoggerConfig:
         return self._logger
 
     @staticmethod
-    def log_banner(logger: logging.Logger, message: str, width: int = 64) -> None:
+    def log_banner(
+        logger: logging.Logger,
+        message: str,
+        width: int = 64
+    ) -> None:
         border = "#" * width
         middle = f"## {message.center(width - 6)} ##"
         logger.info(border)
@@ -89,4 +93,9 @@ def get_logger(
 ) -> logging.Logger:
     if debug:
         level = logging.DEBUG
-    return LoggerConfig(name=name, level=level, log_file=log_file, colorize=color).get()
+    return LoggerConfig(
+        name=name,
+        level=level,
+        log_file=log_file,
+        colorize=color
+    ).get()

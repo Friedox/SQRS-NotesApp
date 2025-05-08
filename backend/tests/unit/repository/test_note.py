@@ -26,7 +26,15 @@ class NoteUpdate:
 
 
 class NoteResponse:
-    def __init__(self, note_id, title, content, user_id, created_at, updated_at):
+    def __init__(
+        self,
+        note_id,
+        title,
+        content,
+        user_id,
+        created_at,
+        updated_at
+    ):
         self.note_id = note_id
         self.title = title
         self.content = content
@@ -139,11 +147,17 @@ async def test_get_all_by_user_id(mock_get_all, mock_session, note_response):
     user_id = 1
     mock_get_all.return_value = [note_response, note_response]
 
-    result = await NoteRepo.get_all_by_user_id(session=mock_session, user_id=user_id)
+    result = await NoteRepo.get_all_by_user_id(
+        session=mock_session,
+        user_id=user_id
+    )
 
     assert len(result) == 2
     assert all(isinstance(note, NoteResponse) for note in result)
-    mock_get_all.assert_awaited_once_with(session=mock_session, user_id=user_id)
+    mock_get_all.assert_awaited_once_with(
+        session=mock_session,
+        user_id=user_id
+    )
 
 
 @patch.object(NoteRepo, "update")
@@ -154,12 +168,18 @@ async def test_update_found(mock_update, mock_session, note_response):
     mock_update.return_value = note_response
 
     result = await NoteRepo.update(
-        session=mock_session, note_id=note_id, user_id=user_id, note_data=note_data
+        session=mock_session,
+        note_id=note_id,
+        user_id=user_id,
+        note_data=note_data
     )
 
     assert result == note_response
     mock_update.assert_awaited_once_with(
-        session=mock_session, note_id=note_id, user_id=user_id, note_data=note_data
+        session=mock_session,
+        note_id=note_id,
+        user_id=user_id,
+        note_data=note_data
     )
 
 
@@ -171,12 +191,18 @@ async def test_update_not_found(mock_update, mock_session):
     mock_update.return_value = None
 
     result = await NoteRepo.update(
-        session=mock_session, note_id=note_id, user_id=user_id, note_data=note_data
+        session=mock_session,
+        note_id=note_id,
+        user_id=user_id,
+        note_data=note_data
     )
 
     assert result is None
     mock_update.assert_awaited_once_with(
-        session=mock_session, note_id=note_id, user_id=user_id, note_data=note_data
+        session=mock_session,
+        note_id=note_id,
+        user_id=user_id,
+        note_data=note_data
     )
 
 
@@ -188,12 +214,18 @@ async def test_update_empty_data(mock_update, mock_session, note_response):
     mock_update.return_value = note_response
 
     result = await NoteRepo.update(
-        session=mock_session, note_id=note_id, user_id=user_id, note_data=note_data
+        session=mock_session,
+        note_id=note_id,
+        user_id=user_id,
+        note_data=note_data
     )
 
     assert result == note_response
     mock_update.assert_awaited_once_with(
-        session=mock_session, note_id=note_id, user_id=user_id, note_data=note_data
+        session=mock_session,
+        note_id=note_id,
+        user_id=user_id,
+        note_data=note_data
     )
 
 

@@ -14,14 +14,19 @@ if TYPE_CHECKING:
 class Note(Base):
     __tablename__ = "note"
 
-    note_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    note_id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=True
+    )
     title: Mapped[str] = mapped_column(String, nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=datetime.now(UTC)
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=datetime.now(UTC), onupdate=datetime.now(UTC)
+        DateTime,
+        nullable=False,
+        default=datetime.now(UTC),
+        onupdate=datetime.now(UTC),
     )
 
     user_id: Mapped[int] = mapped_column(

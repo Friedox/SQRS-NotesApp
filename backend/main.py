@@ -2,12 +2,13 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
-from logger import get_logger
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api import router as main_router
+from app.services.timing_middleware import TimingMiddleware
 from config import settings
+from logger import get_logger
 
 
 logger = get_logger(name=__name__, debug=settings.run.debug)
@@ -25,7 +26,8 @@ middleware = [
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
-    )
+    ),
+    Middleware(TimingMiddleware)
 ]
 
 
@@ -46,4 +48,9 @@ if __name__ == "__main__":
     logger.info("🚀 Starting up...")
     logger.debug(settings.database.db_url)
 
-    uvicorn.run("main:app", host=settings.run.host, port=settings.run.port, reload=True)
+    uvicorn.run(
+        "main:app",
+        host=settings.run.host,
+        port=settings.run.port,
+        reload=True
+    )

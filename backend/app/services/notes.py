@@ -16,7 +16,11 @@ async def create_note(
     )
 
 
-async def get_note(session: AsyncSession, note_id: int, token: str) -> NoteResponse:
+async def get_note(
+        session: AsyncSession,
+        note_id: int,
+        token: str
+) -> NoteResponse:
     user = await authenticate_token(session=session, token=token)
 
     note = await note_repo.get_by_id(
@@ -29,10 +33,16 @@ async def get_note(session: AsyncSession, note_id: int, token: str) -> NoteRespo
     return note
 
 
-async def get_all_notes(session: AsyncSession, token: str) -> list[NoteResponse]:
+async def get_all_notes(
+        session: AsyncSession,
+        token: str
+) -> list[NoteResponse]:
     user = await authenticate_token(session=session, token=token)
 
-    return await note_repo.get_all_by_user_id(session=session, user_id=user.user_id)
+    return await note_repo.get_all_by_user_id(
+        session=session,
+        user_id=user.user_id
+    )
 
 
 async def update_note(
@@ -41,7 +51,10 @@ async def update_note(
     user = await authenticate_token(session=session, token=token)
 
     updated_note = await note_repo.update(
-        session=session, note_id=note_id, user_id=user.user_id, note_data=note_data
+        session=session,
+        note_id=note_id,
+        user_id=user.user_id,
+        note_data=note_data
     )
 
     if updated_note is None:
@@ -60,6 +73,10 @@ async def delete_note(session: AsyncSession, note_id: int, token: str) -> bool:
     if note is None:
         raise NoteNotFoundError(note_id=note_id)
 
-    await note_repo.delete(session=session, note_id=note.note_id, user_id=user.user_id)
+    await note_repo.delete(
+        session=session,
+        note_id=note.note_id,
+        user_id=user.user_id
+    )
 
     return True

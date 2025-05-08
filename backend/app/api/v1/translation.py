@@ -55,4 +55,6 @@ async def get_languages_endpoint(
     session: AsyncSession = Depends(database_helper.session_getter),
 ):
     languages = await translation_service.get_languages()
-    return await ResponseMiddleware.response(LanguagesResponse(languages=languages))
+    return await ResponseMiddleware.response(
+        LanguagesResponse(languages=languages)
+    )

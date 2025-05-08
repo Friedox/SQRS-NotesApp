@@ -79,7 +79,12 @@ def repo_patch():
         yield mock
 
 
-async def test_create_note(mock_session, note_response, auth_patch, repo_patch):
+async def test_create_note(
+    mock_session,
+    note_response,
+    auth_patch,
+    repo_patch
+):
     note_data = NoteCreate(title="Test Note", content="This is a test note")
     token = "valid_token"
     repo_patch.create.return_value = note_response
@@ -98,7 +103,12 @@ async def test_create_note(mock_session, note_response, auth_patch, repo_patch):
     assert result == note_response
 
 
-async def test_get_note_success(mock_session, note_response, auth_patch, repo_patch):
+async def test_get_note_success(
+    mock_session,
+    note_response,
+    auth_patch,
+    repo_patch
+):
     note_id = 1
     token = "valid_token"
     repo_patch.get_by_id.return_value = note_response
@@ -136,7 +146,12 @@ async def test_get_note_not_found(mock_session, auth_patch, repo_patch):
     assert repo_patch.get_by_id.call_args.kwargs["user_id"] == 1
 
 
-async def test_get_all_notes(mock_session, note_response, auth_patch, repo_patch):
+async def test_get_all_notes(
+    mock_session,
+    note_response,
+    auth_patch,
+    repo_patch
+):
     token = "valid_token"
     notes = [note_response, note_response]
     repo_patch.get_all_by_user_id.return_value = notes
@@ -148,14 +163,20 @@ async def test_get_all_notes(mock_session, note_response, auth_patch, repo_patch
     assert auth_patch.call_args.kwargs["token"] == token
 
     repo_patch.get_all_by_user_id.assert_called_once()
-    assert repo_patch.get_all_by_user_id.call_args.kwargs["session"] == mock_session
-    assert repo_patch.get_all_by_user_id.call_args.kwargs["user_id"] == 1
+    kwargs = repo_patch.get_all_by_user_id.call_args.kwargs
+    assert kwargs["session"] == mock_session
+    assert kwargs["user_id"] == 1
 
     assert result == notes
     assert len(result) == 2
 
 
-async def test_update_note_success(mock_session, note_response, auth_patch, repo_patch):
+async def test_update_note_success(
+    mock_session,
+    note_response,
+    auth_patch,
+    repo_patch
+):
     note_id = 1
     token = "valid_token"
     note_data = NoteUpdate(title="Updated Title")
@@ -197,7 +218,12 @@ async def test_update_note_not_found(mock_session, auth_patch, repo_patch):
     assert repo_patch.update.call_args.kwargs["note_data"] == note_data
 
 
-async def test_delete_note_success(mock_session, note_response, auth_patch, repo_patch):
+async def test_delete_note_success(
+    mock_session,
+    note_response,
+    auth_patch,
+    repo_patch
+):
     note_id = 1
     token = "valid_token"
     repo_patch.get_by_id.return_value = note_response

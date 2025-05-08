@@ -4,6 +4,8 @@ from uuid import uuid4
 
 import jwt
 import pytest
+from config import settings
+from exc import InvalidCredentialsError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.token import TokenScheme
@@ -76,7 +78,8 @@ async def test_decrypt_success(monkeypatch, mock_session):
 async def test_decrypt_expired(monkeypatch, mock_session):
     monkeypatch.setattr(
         "app.services.security.jwt.decode",
-        lambda *args, **kwargs: (_ for _ in ()).throw(jwt.ExpiredSignatureError()),
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            jwt.ExpiredSignatureError()),
     )
 
     with pytest.raises(ValueError) as exc:
@@ -127,4 +130,5 @@ async def test_fingerprint_issue_and_logout(monkeypatch, mock_session):
     monkeypatch.setattr("app.services.security.token_repo", fake_repo)
     fake_jti = uuid4()
     await manager.logout(session=mock_session, jti=str(fake_jti))
-    fake_repo.revoke.assert_awaited_once_with(session=mock_session, jti=fake_jti)
+    fake_repo.revoke.assert_awaited_once_with(session=mock_session,
+                                              jti=fake_jti)

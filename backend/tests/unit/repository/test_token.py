@@ -14,7 +14,15 @@ class TokenCreate:
 
 
 class TokenResponse:
-    def __init__(self, jti, user_id, fp, expires_at, created_at, revoked=False):
+    def __init__(
+        self,
+        jti,
+        user_id,
+        fp,
+        expires_at,
+        created_at,
+        revoked=False
+    ):
         self.jti = jti
         self.user_id = user_id
         self.fp = fp
@@ -83,10 +91,16 @@ async def test_create(mock_create, mock_session, token_response):
     )
     mock_create.return_value = token_response
 
-    result = await TokenRepo.create(session=mock_session, token_data=token_data)
+    result = await TokenRepo.create(
+        session=mock_session,
+        token_data=token_data
+    )
 
     assert result == token_response
-    mock_create.assert_awaited_once_with(session=mock_session, token_data=token_data)
+    mock_create.assert_awaited_once_with(
+        session=mock_session,
+        token_data=token_data
+    )
 
 
 @patch.object(TokenRepo, "get_by_jti")

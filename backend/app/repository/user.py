@@ -19,16 +19,26 @@ class UserRepository:
         ) is not None
 
     @staticmethod
-    async def get_pass_hash_by_email(session: AsyncSession, email: str) -> SecretStr:
-        stored_user = await session.scalar(select(User).where(User.email == email))
+    async def get_pass_hash_by_email(
+            session: AsyncSession,
+            email: str
+    ) -> SecretStr:
+        stored_user = await session.scalar(
+            select(User).where(User.email == email)
+        )
 
         if not stored_user:
             raise UserNotFoundError
 
-        return SecretStr(secret_value=(cast(str, stored_user.password_hash)))
+        return SecretStr(
+            secret_value=(cast(str, stored_user.password_hash))
+        )
 
     @staticmethod
-    async def create(session: AsyncSession, new_user: UserCreateScheme) -> UserScheme:
+    async def create(
+            session: AsyncSession,
+            new_user: UserCreateScheme
+    ) -> UserScheme:
         user = User(
             email=new_user.email,
             name=new_user.name,
@@ -58,7 +68,9 @@ class UserRepository:
 
     @staticmethod
     async def get(session: AsyncSession, user_id: int) -> UserScheme:
-        stored_user = await session.scalar(select(User).where(User.user_id == user_id))
+        stored_user = await session.scalar(
+            select(User).where(User.user_id == user_id)
+        )
 
         if not stored_user:
             raise UserNotFoundError

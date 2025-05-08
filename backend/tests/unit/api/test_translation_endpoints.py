@@ -27,12 +27,14 @@ def client():
 async def test_translate_text_endpoint(monkeypatch):
     mock_translate = AsyncMock(return_value="Привет мир")
     monkeypatch.setattr(
-        "app.services.translation.translation_service.translate_text", mock_translate
+        "app.services.translation.translation_service.translate_text",
+        mock_translate
     )
 
     mock_response = AsyncMock(return_value={"translated_text": "Привет мир"})
     monkeypatch.setattr(
-        "app.services.response_middleware.ResponseMiddleware.response", mock_response
+        "app.services.response_middleware.ResponseMiddleware.response",
+        mock_response
     )
 
     mock_auth = AsyncMock(return_value={"token": "valid_token"})
@@ -42,7 +44,10 @@ async def test_translate_text_endpoint(monkeypatch):
 
     mock_session = AsyncMock()
 
-    with patch("app.models.database_helper.session_getter", return_value=mock_session):
+    with patch(
+        "app.models.database_helper.session_getter",
+        return_value=mock_session
+    ):
         app.include_router(router)
         client = TestClient(app)
 
@@ -65,14 +70,20 @@ async def test_detect_language_endpoint(monkeypatch):
         return_value={"language": "en", "confidence": 0.98, "isReliable": True}
     )
     monkeypatch.setattr(
-        "app.services.translation.translation_service.detect_language", mock_detection
+        "app.services.translation.translation_service.detect_language",
+        mock_detection
     )
 
     mock_response = AsyncMock(
-        return_value={"language": "en", "confidence": 0.98, "is_reliable": True}
+        return_value={
+            "language": "en",
+            "confidence": 0.98,
+            "is_reliable": True
+        }
     )
     monkeypatch.setattr(
-        "app.services.response_middleware.ResponseMiddleware.response", mock_response
+        "app.services.response_middleware.ResponseMiddleware.response",
+        mock_response
     )
 
     mock_auth = AsyncMock(return_value={"token": "valid_token"})
@@ -82,12 +93,16 @@ async def test_detect_language_endpoint(monkeypatch):
 
     mock_session = AsyncMock()
 
-    with patch("app.models.database_helper.session_getter", return_value=mock_session):
+    with patch(
+        "app.models.database_helper.session_getter",
+        return_value=mock_session
+    ):
         app.include_router(router)
         client = TestClient(app)
 
         response = client.post(
-            "/detection?text=Hello%20world", headers={"Authorization": "Bearer token"}
+            "/detection?text=Hello%20world",
+            headers={"Authorization": "Bearer token"}
         )
 
         assert response.status_code == status.HTTP_200_OK
@@ -104,7 +119,8 @@ async def test_get_languages_endpoint(monkeypatch):
         ]
     )
     monkeypatch.setattr(
-        "app.services.translation.translation_service.get_languages", mock_languages
+        "app.services.translation.translation_service.get_languages",
+        mock_languages
     )
 
     mock_response = AsyncMock(
@@ -116,7 +132,8 @@ async def test_get_languages_endpoint(monkeypatch):
         }
     )
     monkeypatch.setattr(
-        "app.services.response_middleware.ResponseMiddleware.response", mock_response
+        "app.services.response_middleware.ResponseMiddleware.response",
+        mock_response
     )
 
     mock_auth = AsyncMock(return_value={"token": "valid_token"})
@@ -126,11 +143,17 @@ async def test_get_languages_endpoint(monkeypatch):
 
     mock_session = AsyncMock()
 
-    with patch("app.models.database_helper.session_getter", return_value=mock_session):
+    with patch(
+        "app.models.database_helper.session_getter",
+        return_value=mock_session
+    ):
         app.include_router(router)
         client = TestClient(app)
 
-        response = client.get("/languages", headers={"Authorization": "Bearer token"})
+        response = client.get(
+            "/languages",
+            headers={"Authorization": "Bearer token"}
+        )
 
         assert response.status_code == status.HTTP_200_OK
         mock_languages.assert_awaited_once()

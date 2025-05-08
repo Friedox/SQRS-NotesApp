@@ -16,7 +16,10 @@ from exc import InvalidCredentialsError
 class TokenManager:
     @staticmethod
     async def generate_token(
-        session: AsyncSession, payload: dict, user_id: int, expires_in: int = None
+        session: AsyncSession,
+        payload: dict,
+        user_id: int,
+        expires_in: int = None
     ) -> str:
         jti = uuid4()
         exp_timestamp = int(time.time()) + (
@@ -74,7 +77,11 @@ class TokenManager:
 
         return payload
 
-    async def issue_token(self, user: UserScheme, session: AsyncSession) -> str:
+    async def issue_token(
+        self,
+        user: UserScheme,
+        session: AsyncSession
+    ) -> str:
         token_payload = {"user_id": user.user_id}
         auth_token = await self.generate_token(
             session=session, user_id=user.user_id, payload=token_payload

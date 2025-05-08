@@ -93,7 +93,10 @@ async def test_create(mock_create, mock_session, user_response):
     result = await UserRepo.create(session=mock_session, user_data=user_data)
 
     assert result == user_response
-    mock_create.assert_awaited_once_with(session=mock_session, user_data=user_data)
+    mock_create.assert_awaited_once_with(
+        session=mock_session,
+        user_data=user_data
+    )
 
 
 @patch.object(UserRepo, "get_by_id")

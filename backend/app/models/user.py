@@ -10,7 +10,9 @@ from .note import Note
 class User(Base):
     __tablename__ = "user"
 
-    user_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=True
+    )
     email: Mapped[str] = mapped_column(String, nullable=False)
     password_hash: Mapped[str] = mapped_column(String, nullable=False)
 

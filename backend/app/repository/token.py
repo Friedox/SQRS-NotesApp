@@ -29,13 +29,18 @@ class TokenRepository:
     @staticmethod
     async def is_allowed(session: AsyncSession, fp: str) -> bool:
         row = await session.scalar(
-            select(Token.revoked).where(Token.fp == fp, Token.expires_at > func.now())
+            select(Token.revoked).where(
+                Token.fp == fp,
+                Token.expires_at > func.now()
+            )
         )
         return row is not None and not row
 
     @staticmethod
     async def cleanup(session: AsyncSession):
-        await session.execute(delete(Token).where(Token.expires_at < func.now()))
+        await session.execute(
+            delete(Token).where(Token.expires_at < func.now())
+        )
         await session.commit()
 
 

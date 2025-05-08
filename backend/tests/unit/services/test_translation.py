@@ -10,7 +10,7 @@ from app.services.translation import translation_service
 @pytest.fixture(autouse=True)
 def disable_logging():
     with patch("app.services.translation.logger.info"), patch(
-        "app.services.translation.logger.debug"
+            "app.services.translation.logger.debug"
     ):
         yield
 
@@ -35,7 +35,8 @@ def mock_language_response():
     response = MagicMock(spec=Response)
     response.json.return_value = {
         "data": {
-            "detections": [{"language": "en", "confidence": 0.98, "isReliable": True}]
+            "detections": [
+                {"language": "en", "confidence": 0.98, "isReliable": True}]
         }
     }
     response.raise_for_status.return_value = response
@@ -56,7 +57,8 @@ def mock_languages_response():
 
 
 @pytest.mark.asyncio
-async def test_translate_text_from_api(monkeypatch, mock_session, mock_http_response):
+async def test_translate_text_from_api(monkeypatch, mock_session,
+                                       mock_http_response):
     mock_cache_get = AsyncMock(return_value=None)
     monkeypatch.setattr("app.services.cache.cache_service.get", mock_cache_get)
 
@@ -127,7 +129,11 @@ async def test_translation_api_error(monkeypatch, mock_session):
 
 
 @pytest.mark.asyncio
-async def test_detect_language(monkeypatch, mock_session, mock_language_response):
+async def test_detect_language(
+        monkeypatch,
+        mock_session,
+        mock_language_response
+):
     mock_post = AsyncMock(return_value=mock_language_response)
 
     with patch("httpx.AsyncClient") as mock_client:
@@ -136,11 +142,19 @@ async def test_detect_language(monkeypatch, mock_session, mock_language_response
         result = await translation_service.detect_language(text="Hello world")
 
         mock_post.assert_awaited_once()
-        assert result == {"language": "en", "confidence": 0.98, "isReliable": True}
+        assert result == {
+            "language": "en",
+            "confidence": 0.98,
+            "isReliable": True
+        }
 
 
 @pytest.mark.asyncio
-async def test_get_languages(monkeypatch, mock_session, mock_languages_response):
+async def test_get_languages(
+        monkeypatch,
+        mock_session,
+        mock_languages_response
+):
     mock_get = AsyncMock(return_value=mock_languages_response)
 
     with patch("httpx.AsyncClient") as mock_client:

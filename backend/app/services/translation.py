@@ -9,18 +9,23 @@ from config import settings
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 
 class TranslationService:
     def __init__(self):
-        self.base_url = "https://deep-translate1.p.rapidapi.com/language/translate/v2"
+        self.base_url = (
+            "https://deep-translate1.p.rapidapi.com/language/translate/v2"
+        )
         self.headers = {
             "Content-Type": "application/json",
             "x-rapidapi-host": "deep-translate1.p.rapidapi.com",
-            "x-rapidapi-key": settings.translation.api_key.get_secret_value(),
+            "x-rapidapi-key": (
+                settings.translation.api_key.get_secret_value()
+            ),
         }
         logger.debug(
             "Translation service initialized with cache TTL: %d seconds",
@@ -36,12 +41,16 @@ class TranslationService:
 
         if cached:
             logger.debug(
-                "Cache hit: translation found in cache for key '%s'", cache_key
+                "Cache hit: translation found in cache for key '%s'",
+                cache_key
             )
             return cached.decode()
 
         logger.debug(
-            "Cache miss: translation not found in cache for key '%s', calling API",
+            (
+                "Cache miss: translation not found in cache for key '%s', "
+                "calling API"
+            ),
             cache_key,
         )
         async with httpx.AsyncClient() as client:
@@ -54,13 +63,15 @@ class TranslationService:
             data = response.json()
             logger.info("Translation API response: {}", data)
 
-            if not data.get("data", {}).get("translations", {}).get("translatedText"):
-                error_msg = "No translation found in response: {}".format(data)
+            if not data.get("data", {}).get("translations", {}).get(
+                "translatedText"
+            ):
+                error_msg = f"No translation found in response: {data}"
                 raise ValueError(error_msg)
 
             translations = data["data"]["translations"]["translatedText"]
             if not isinstance(translations, list) or not translations:
-                error_msg = "Invalid translations format in response: {}".format(data)
+                error_msg = f"Invalid translations format in response: {data}"
                 raise ValueError(error_msg)
 
             translation = translations[0]
@@ -77,7 +88,9 @@ class TranslationService:
     async def detect_language(self, text: str) -> Dict:
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                f"{self.base_url}/detect", headers=self.headers, json={"q": text}
+                f"{self.base_url}/detect",
+                headers=self.headers,
+                json={"q": text}
             )
             response.raise_for_status()
             return response.json()["data"]["detections"][0]
