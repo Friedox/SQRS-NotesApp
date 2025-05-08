@@ -69,7 +69,7 @@ async def test_register_user_success(
 
     result = await register_user(
         session=mock_session,
-        user_creds=register_creds
+        user_creds=register_creds,
     )
 
     fake_repo.is_email_in_table.assert_awaited_once_with(
@@ -100,7 +100,7 @@ async def test_register_user_success(
 async def test_register_user_email_in_use(
     monkeypatch,
     mock_session,
-    register_creds
+    register_creds,
 ):
     fake_repo = AsyncMock()
     fake_repo.is_email_in_table.return_value = True
@@ -127,7 +127,7 @@ async def test_login_user_success(
     monkeypatch,
     mock_session,
     login_creds,
-    user_obj
+    user_obj,
 ):
     fake_repo = AsyncMock()
     fake_repo.is_email_in_table.return_value = True
@@ -163,11 +163,7 @@ async def test_login_user_success(
 
 
 @pytest.mark.asyncio
-async def test_login_user_invalid_email(
-    monkeypatch,
-    mock_session,
-    login_creds
-):
+async def test_login_user_invalid_email(monkeypatch, mock_session, login_creds):
     fake_repo = AsyncMock()
     fake_repo.is_email_in_table.return_value = False
     monkeypatch.setattr("app.services.auth.user_repo", fake_repo)
@@ -199,9 +195,8 @@ async def test_authenticate_token_success(monkeypatch, mock_session):
         user_id=1,
         email="e",
         password_hash="h",
-        name=None
+        name=None,
     )
-    
     fake_repo = AsyncMock(get=AsyncMock(return_value=expected_user))
     monkeypatch.setattr("app.services.auth.user_repo", fake_repo)
 
@@ -215,10 +210,7 @@ async def test_authenticate_token_success(monkeypatch, mock_session):
 @pytest.mark.asyncio
 async def test_logout_user(monkeypatch, mock_session):
     fake_auth_token = AsyncMock()
-    monkeypatch.setattr(
-        "app.services.auth.authenticate_token",
-        fake_auth_token
-    )
+    monkeypatch.setattr("app.services.auth.authenticate_token", fake_auth_token)
 
     jti_val = str(uuid.uuid4())
     fake_decrypt = AsyncMock(return_value={"jti": jti_val})
